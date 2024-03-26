@@ -1,0 +1,3 @@
+ # Python package for metadata schemas
+
+In this talk we will present a Python package to validate, write and read structured metadata based on schemas. The schemas are described in a JSON file following the specifications of the metadata schema manager developed in the context of the ManGO portal, but this implementation is independent from the web application. Given a schema, users can provide hierarchical metadata in a Python dictionary, validate its contents and add it to an iRODS data object or collection as AVUs with the appropriate namespacing. The same package allows to read back the AVUs and parse them into a Python dictionary preserving the original hierarchy.
