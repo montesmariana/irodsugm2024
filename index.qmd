@@ -1,0 +1,233 @@
+---
+title: Python package for metadata schemas
+title-slide-attributes:
+  data-background-image: assets/kul-title-bg.png
+  data-background-size: contain
+author: Mariana Montes and Ronny Moreas
+date: 2024-05-28
+format:
+  revealjs:
+    theme: [default, assets/kul.scss]
+    footer: iRODS UGM 2024, Amsterdam
+    logo: assets/kul-logo.png
+    echo: true
+code-annotations: hover
+---
+
+```{python}
+# | label: setup
+# | include: false
+import os, os.path
+import json
+from datetime import date
+from irods.session import iRODSSession
+from mango_mdschema import Schema
+
+home_dir = "/icts/home/datateam_icts_icts_test/irodsugm_demo"
+
+env_file = ".irods_environment.json"
+
+session = iRODSSession(irods_env_file=env_file)
+```
+
+## Outline
+
+- The Why
+- The What: Features
+- The How: Specifications
+
+::: notes
+
+- The Why
+  - Origins: The metadata schema forms in ManGO Portal
+  - Trigger: Why a Python module
+- The What: Features
+  - Validate: requirements and formats
+  - Write: from dictionaries to namespacing
+  - Read: from AVUs back to dictionaries
+- The How: Specifications
+  - The JSON format
+  - The schema manager
+:::
+
+# The Why
+
+## Origins: ManGO portal
+
+::: {style="overflow-y: scroll; height: 600px;"}
+![](img/empty-mdschema-form.png)
+:::
+
+## Origins: ManGO portal
+
+::: {style="overflow-y: scroll; height: 600px;"}
+![](img/view-metadata.png)
+:::
+
+## Trigger: Why a Python module
+
+### The need
+- Adding automatically generated metadata in batches
+- Adding metadata with data ingestion
+
+### The advantages
+- Format validation
+- Hierarchical structure (rendered in the Portal)
+
+# The What
+
+## Validate metadata: interpret schemas
+
+```{python}
+book_schema = Schema("book-v2.0.0-published.json")  # <1>
+print(book_schema)
+```
+
+1. The optional `prefix` argument lets you tailor it to your implementation.
+
+## Validate metadata: examine requirements
+
+```{python}
+book_schema.print_requirements("publishing_date")
+```
+```{python}
+book_schema.print_requirements("publisher")
+```
+## Validate metadata: examine requirements
+
+```{python}
+book_schema.print_requirements("cover_colors")
+```
+
+## Validate metadata: required fields and defaults
+
+```{python}
+my_metadata = {
+    "title": "An exemplary book",  # <1>
+    "author": [
+        {"name": "Fulano De Tal", "email": "fulano.detal@kuleuven.be"},  # <2>
+        {"name": "Jane Doe", "email": "jane.doe@kuleuven.be"},  # <2>
+    ],
+    "ebook": "Available",
+    "publishing_date": "2024-02-01",  # <3>
+    "cover_colors": ["red", "magenta", "yellow", "turquoise"],  # <4>
+}
+book_schema.validate(my_metadata)  # <5>
+```
+
+1. A required field without a default
+2. A repeatable composite field
+3. A repeatable date
+4. A field with multiple possible values, not all of them valid
+5. Required fields with default are filled in.
+
+## Validate metadata: helpful messages
+
+```{python}
+#| error: true
+book_schema.validate(
+    {
+        "title": "Some title",
+        "author": {"name": "Jane Doe", "email": "sweetdoe@email.eu"},
+        "publishing_date": date.today(),
+    }
+)
+```
+
+
+```{python}
+# | error: true
+book_schema.validate(
+    {
+        "title": "Some title",
+        "author": {"name": "Jane Doe", "email": "jane.doe@kuleuven.be"},
+        "publishing_date": "01/01/1990",
+    }
+)
+```
+
+## Validate metadata: helpful messages
+
+```{python}
+#| message: true
+#| warning: true
+import logging
+
+logger = logging.getLogger("mango_mdschema")
+logger.setLevel(logging.INFO)
+
+book_schema.validate(my_metadata)
+```
+
+## Write: from dictionaries to namespacing
+
+```{python}
+irods_object = session.collections.get(home_dir).data_objects[0]
+irods_object.metadata.items()
+```
+
+```{python}
+avus = book_schema.to_avus(my_metadata)
+avus
+```
+
+## Write: from dictionaries to namespacing
+
+```{python}
+book_schema.apply(irods_object, my_metadata)
+irods_object.metadata.items()
+```
+
+## Read: from AVUs back to dictionaries
+
+```{python}
+#book_schema.from_avus(avus)
+book_schema.extract(irods_object)
+```
+
+# The How: Specifications
+
+## The JSON format
+
+```{python}
+with open("book-v2.0.0-published.json", "r") as f:
+    schema_json = json.load(f)
+schema_json
+```
+
+## The Schema Manager
+
+<!-- Screenshot of the schema manager and link to the repository -->
+
+# Conclusion
+
+## `mango-mdschema`: Main takeaways
+
+- Offers validation, writing and reading of structured metadata
+
+- Schemas are described in JSON, can be designed in the manager
+
+- Metadata can be hierarchical, which is rendered with namespacing
+
+- Input can be automatized, output can be parsed and rendered in the portal
+
+# 
+
+::: callout-tip
+You don't need ManGO, these are also standalone applications!
+:::
+
+# Thank you! {background-color="#DCE7F0"}
+
+github.com/kuleuven/mango-mdschema
+github.com/kuleuven/mango-metadata-schemas
+
+::: footer
+:::
+
+
+```{python}
+# | include: false
+irods_object.metadata.remove_all()
+session.cleanup()
+```
