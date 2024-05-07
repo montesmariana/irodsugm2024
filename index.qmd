@@ -64,15 +64,36 @@ session = iRODSSession(irods_env_file=env_file)
 ![](img/view-metadata.png)
 :::
 
-## Trigger: Why a Python module
+## 
 
-### The need
-- Adding automatically generated metadata in batches
-- Adding metadata with data ingestion
+:::: {.columns}
 
-### The advantages
+::: {.column}
+### Python
+
+- Metadata in batches
+- Metadata with data ingestion
+
+:::
+
+::: {.column}
+### Metadata schemas
+
 - Format validation
-- Hierarchical structure (rendered in the Portal)
+- Required fields and default values
+- Hierarchical structure
+
+:::
+::::
+
+```{.python filename="add_schema_metadata.py"}
+from irods.session import iRODSSession
+from mango_mdschema import Schema
+
+# -- here some code to open the session, choose an object and read metadata ---
+my_schema = Schema("book-v2.0.0-published.json")
+my_schema.apply(irods_object, my_metadata)
+```
 
 # The What
 
@@ -90,9 +111,13 @@ print(book_schema)
 ```{python}
 book_schema.print_requirements("publishing_date")
 ```
+
+. . .
+
 ```{python}
 book_schema.print_requirements("publisher")
 ```
+
 ## Validate metadata: examine requirements
 
 ```{python}
@@ -103,16 +128,16 @@ book_schema.print_requirements("cover_colors")
 
 ```{python}
 my_metadata = {
-    "title": "An exemplary book",  # <1>
-    "author": [
+    "title": "An exemplary book",                                        # <1>
+    "author": [                                                          # <2>
         {"name": "Fulano De Tal", "email": "fulano.detal@kuleuven.be"},  # <2>
-        {"name": "Jane Doe", "email": "jane.doe@kuleuven.be"},  # <2>
-    ],
+        {"name": "Jane Doe", "email": "jane.doe@kuleuven.be"},           # <2>
+    ],                                                                   # <2>
     "ebook": "Available",
-    "publishing_date": "2024-02-01",  # <3>
-    "cover_colors": ["red", "magenta", "yellow", "turquoise"],  # <4>
+    "publishing_date": "2024-02-01",                                     # <3>
+    "cover_colors": ["red", "magenta", "yellow", "turquoise"],           # <4>
 }
-book_schema.validate(my_metadata)  # <5>
+book_schema.validate(my_metadata)                                        # <5>
 ```
 
 1. A required field without a default
@@ -134,6 +159,7 @@ book_schema.validate(
 )
 ```
 
+. . .
 
 ```{python}
 # | error: true
@@ -149,8 +175,8 @@ book_schema.validate(
 ## Validate metadata: helpful messages
 
 ```{python}
-#| message: true
-#| warning: true
+# | message: true
+# | warning: true
 import logging
 
 logger = logging.getLogger("mango_mdschema")
@@ -167,6 +193,7 @@ irods_object.metadata.items()
 ```
 
 ```{python}
+#| output-location: fragment
 avus = book_schema.to_avus(my_metadata)
 avus
 ```
@@ -190,6 +217,7 @@ book_schema.extract(irods_object)
 ## The JSON format
 
 ```{python}
+#| echo: false
 with open("book-v2.0.0-published.json", "r") as f:
     schema_json = json.load(f)
 schema_json
@@ -197,7 +225,9 @@ schema_json
 
 ## The Schema Manager
 
-<!-- Screenshot of the schema manager and link to the repository -->
+::: {style="overflow-y: scroll; height: 600px;"}
+![](img/schema-manager.png)
+:::
 
 # Conclusion
 
@@ -227,7 +257,7 @@ github.com/kuleuven/mango-metadata-schemas
 
 
 ```{python}
-# | include: false
+#| include: false
 irods_object.metadata.remove_all()
 session.cleanup()
 ```
