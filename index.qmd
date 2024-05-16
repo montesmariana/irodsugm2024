@@ -58,17 +58,25 @@ session = iRODSSession(irods_env_file=env_file)
 ![](img/empty-mdschema-form.png)
 :::
 
+::: footer
+[ManGO Schema Manager](github.com/kuleuven/mango-metadata-schemas)
+:::
+
 ## Origins: ManGO portal
 
 ::: {style="overflow-y: scroll; height: 600px;"}
 ![](img/view-metadata.png)
 :::
 
+::: footer
+[ManGO Schema Manager](github.com/kuleuven/mango-metadata-schemas)
+:::
+
 ## 
 
 :::: {.columns}
 
-::: {.column}
+::: {.column width="40%"}
 ### Python
 
 - Metadata in batches
@@ -76,7 +84,7 @@ session = iRODSSession(irods_env_file=env_file)
 
 :::
 
-::: {.column}
+::: {.column width="60%"}
 ### Metadata schemas
 
 - Format validation
@@ -90,14 +98,15 @@ session = iRODSSession(irods_env_file=env_file)
 from irods.session import iRODSSession
 from mango_mdschema import Schema
 
-# -- here some code to open the session, choose an object and read metadata ---
+# -- here some code to open the session and choose an object --
+# -- define metadata as a dictionary ---
 my_schema = Schema("book-v2.0.0-published.json")
 my_schema.apply(irods_object, my_metadata)
 ```
 
 # The What
 
-## Validate metadata: interpret schemas
+## Interpret schemas from a JSON specification
 
 ```{python}
 book_schema = Schema("book-v2.0.0-published.json")  # <1>
@@ -106,7 +115,7 @@ print(book_schema)
 
 1. The optional `prefix` argument lets you tailor it to your implementation.
 
-## Validate metadata: examine requirements
+## Field requirements
 
 ```{python}
 book_schema.print_requirements("publishing_date")
@@ -118,13 +127,13 @@ book_schema.print_requirements("publishing_date")
 book_schema.print_requirements("publisher")
 ```
 
-## Validate metadata: examine requirements
+## Field requirements
 
 ```{python}
 book_schema.print_requirements("cover_colors")
 ```
 
-## Validate metadata: required fields and defaults
+## Required fields and defaults
 
 ```{python}
 my_metadata = {
@@ -146,7 +155,7 @@ book_schema.validate(my_metadata)                                        # <5>
 4. A field with multiple possible values, not all of them valid
 5. Required fields with default are filled in.
 
-## Validate metadata: helpful messages
+## Error messages
 
 ```{python}
 #| error: true
@@ -172,7 +181,7 @@ book_schema.validate(
 )
 ```
 
-## Validate metadata: helpful messages
+## Warnings
 
 ```{python}
 # | message: true
@@ -227,6 +236,10 @@ schema_json
 
 ::: {style="overflow-y: scroll; height: 600px;"}
 ![](img/schema-manager.png)
+:::
+
+::: footer
+[ManGO Schema Manager](github.com/kuleuven/mango-metadata-schemas)
 :::
 
 # Conclusion

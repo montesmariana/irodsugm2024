@@ -16,8 +16,7 @@ $presentation-title-slide-text-align: left;
 
 .reveal #title-slide h1{
     color: $body-bg;
-    padding-top: vh40;
-    padding-bottom: 110px;
+    padding-top: 10px;
     font-size: 2.3em;
 }
 
@@ -33,5 +32,8 @@ $presentation-title-slide-text-align: left;
 .reveal div.quarto-title-author-name, p.date {
     font-size: 30px;
     padding-top: 10px;
+    color: $body-bg;
 }
+
+
 
