@@ -4,7 +4,7 @@ title-slide-attributes:
   data-background-image: assets/kul-title-bg.png
   data-background-size: contain
 author: Mariana Montes and Ronny Moreas
-date: 2024-05-28
+date: 2024-05-29
 format:
   revealjs:
     theme: [default, assets/kul.scss]
@@ -32,27 +32,14 @@ session = iRODSSession(irods_env_file=env_file)
 
 ## Outline
 
-- The Why
-- The What: Features
-- The How: Specifications
+- The ManGO Metadata Schema Manager
+- From JSON to validation
+- From a Python dictionary to AVUs
+- Conclusion
 
-::: notes
+# The ManGO Metadata Schema Manager
 
-- The Why
-  - Origins: The metadata schema forms in ManGO Portal
-  - Trigger: Why a Python module
-- The What: Features
-  - Validate: requirements and formats
-  - Write: from dictionaries to namespacing
-  - Read: from AVUs back to dictionaries
-- The How: Specifications
-  - The JSON format
-  - The schema manager
-:::
-
-# The Why
-
-## Origins: ManGO portal
+## Form to add metadata
 
 ::: {style="overflow-y: scroll; height: 600px;"}
 ![](img/empty-mdschema-form.png)
@@ -62,7 +49,7 @@ session = iRODSSession(irods_env_file=env_file)
 [ManGO Schema Manager](github.com/kuleuven/mango-metadata-schemas)
 :::
 
-## Origins: ManGO portal
+## View of the schema metadata
 
 ::: {style="overflow-y: scroll; height: 600px;"}
 ![](img/view-metadata.png)
@@ -72,41 +59,58 @@ session = iRODSSession(irods_env_file=env_file)
 [ManGO Schema Manager](github.com/kuleuven/mango-metadata-schemas)
 :::
 
-## 
+## The Schema Manager
 
-:::: {.columns}
-
-::: {.column width="40%"}
-### Python
-
-- Metadata in batches
-- Metadata with data ingestion
-
+::: {style="overflow-y: scroll; height: 600px;"}
+![](img/schema-manager.png)
 :::
 
-::: {.column width="60%"}
-### Metadata schemas
-
-- Format validation
-- Required fields and default values
-- Hierarchical structure
-
+::: footer
+[ManGO Schema Manager](github.com/kuleuven/mango-metadata-schemas)
 :::
-::::
 
-```{.python filename="add_schema_metadata.py"}
+## Metadata Schemas as JSON
+book-v2.0.0-published.json
+```{python}
+#| echo: false
+with open("book-v2.0.0-published.json", "r") as f:
+    schema_json = json.load(f)
+schema_json
+```
+
+## Minimal example
+
+```sh
+pip install mango-mdschema
+```
+
+<br>
+
+```{.python filename="add_schema_metadata.py" code-line-numbers="|2,9,10|1,5,6|3,8,11|"}
+import json
 from irods.session import iRODSSession
 from mango_mdschema import Schema
 
-# -- here some code to open the session and choose an object --
-# -- define metadata as a dictionary ---
+with open("metadata_file.json", "r") as f:
+  my_metadata = json.load(f) # a dictionary
+
 my_schema = Schema("book-v2.0.0-published.json")
-my_schema.apply(irods_object, my_metadata)
+with iRODSSession(irods_env_file=env_file) as session:
+  irods_object = session.collections.get(home_dir).data_objects[0]
+  my_schema.apply(irods_object, my_metadata) # includes validation
 ```
 
-# The What
+# From JSON to validation
 
-## Interpret schemas from a JSON specification
+## Metadata schemas as JSON
+
+book-v2.0.0-published.json
+```{python}
+#| echo: false
+schema_json
+```
+
+## Interpretation via the Python package
 
 ```{python}
 book_schema = Schema("book-v2.0.0-published.json")  # <1>
@@ -121,8 +125,6 @@ print(book_schema)
 book_schema.print_requirements("publishing_date")
 ```
 
-. . .
-
 ```{python}
 book_schema.print_requirements("publisher")
 ```
@@ -133,9 +135,12 @@ book_schema.print_requirements("publisher")
 book_schema.print_requirements("cover_colors")
 ```
 
+# From a Python dictionary to AVUs
+
 ## Required fields and defaults
 
 ```{python}
+#| output-location: fragment
 my_metadata = {
     "title": "An exemplary book",                                        # <1>
     "author": [                                                          # <2>
@@ -159,6 +164,7 @@ book_schema.validate(my_metadata)                                        # <5>
 
 ```{python}
 #| error: true
+#| output-location: fragment
 book_schema.validate(
     {
         "title": "Some title",
@@ -168,10 +174,9 @@ book_schema.validate(
 )
 ```
 
-. . .
-
 ```{python}
 # | error: true
+#| output-location: fragment
 book_schema.validate(
     {
         "title": "Some title",
@@ -186,6 +191,7 @@ book_schema.validate(
 ```{python}
 # | message: true
 # | warning: true
+#| output-location: fragment
 import logging
 
 logger = logging.getLogger("mango_mdschema")
@@ -221,49 +227,51 @@ irods_object.metadata.items()
 book_schema.extract(irods_object)
 ```
 
-# The How: Specifications
-
-## The JSON format
-
-```{python}
-#| echo: false
-with open("book-v2.0.0-published.json", "r") as f:
-    schema_json = json.load(f)
-schema_json
-```
-
-## The Schema Manager
-
-::: {style="overflow-y: scroll; height: 600px;"}
-![](img/schema-manager.png)
-:::
-
-::: footer
-[ManGO Schema Manager](github.com/kuleuven/mango-metadata-schemas)
-:::
-
 # Conclusion
 
-## `mango-mdschema`: Main takeaways
+## Metadata schemas with Python
 
-- Offers validation, writing and reading of structured metadata
+:::: {.columns}
 
-- Schemas are described in JSON, can be designed in the manager
+::: {.column width="50%"}
+### Metadata schemas
 
-- Metadata can be hierarchical, which is rendered with namespacing
+- Format validation
+- Required fields and default values
+- Hierarchical structure
 
-- Input can be automatized, output can be parsed and rendered in the portal
+:::
 
-# 
+::: {.column width="50%"}
+### Python
+
+- Processing data in badges
+- Reading metadata from files
+- E.g. metadata with data ingestion
+
+:::
+
+::::
 
 ::: callout-tip
 You don't need ManGO, these are also standalone applications!
 :::
 
+
+## `mango-mdschema`
+
+- Offers validation, writing and reading of structured metadata
+
+- Schemas are described in JSON, can be designed in the manager
+
+- Metadata can be hierarchical, rendered with namespacing
+
+- Input can be automatized, output can be parsed and rendered in the portal
+
 # Thank you! {background-color="#DCE7F0"}
 
-github.com/kuleuven/mango-mdschema
-github.com/kuleuven/mango-metadata-schemas
+[github.com/kuleuven/mango-mdschema](https://github.com/kuleuven/mango-mdschema)
+[github.com/kuleuven/mango-metadata-schemas](https://github.com/kuleuven/mango-metadata-schemas)
 
 ::: footer
 :::

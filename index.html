@@ -11,7 +11,7 @@
   <meta name="generator" content="quarto-1.4.549">
 
   <meta name="author" content="Mariana Montes and Ronny Moreas">
-  <meta name="dcterms.date" content="2024-05-28">
+  <meta name="dcterms.date" content="2024-05-29">
   <title>Python package for metadata schemas</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -402,53 +402,24 @@ Mariana Montes and Ronny Moreas
 </div>
 </div>
 
-  <p class="date">2024-05-28</p>
+  <p class="date">2024-05-29</p>
 </section>
 <section id="outline" class="slide level2">
 <h2>Outline</h2>
 <ul>
-<li>The Why</li>
-<li>The What: Features</li>
-<li>The How: Specifications</li>
+<li>The ManGO Metadata Schema Manager</li>
+<li>From JSON to validation</li>
+<li>From a Python dictionary to AVUs</li>
+<li>Conclusion</li>
 </ul>
-<aside class="notes">
-<ul>
-<li>The Why
-<ul>
-<li>Origins: The metadata schema forms in ManGO Portal</li>
-<li>Trigger: Why a Python module</li>
-</ul></li>
-<li>The What: Features
-<ul>
-<li>Validate: requirements and formats</li>
-<li>Write: from dictionaries to namespacing</li>
-<li>Read: from AVUs back to dictionaries</li>
-</ul></li>
-<li>The How: Specifications
-<ul>
-<li>The JSON format</li>
-<li>The schema manager</li>
-</ul></li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
 </section>
 <section>
-<section id="the-why" class="title-slide slide level1 center">
-<h1>The Why</h1>
+<section id="the-mango-metadata-schema-manager" class="title-slide slide level1 center">
+<h1>The ManGO Metadata Schema Manager</h1>
 
 </section>
-<section id="origins-mango-portal" class="slide level2">
-<h2>Origins: ManGO portal</h2>
+<section id="form-to-add-metadata" class="slide level2">
+<h2>Form to add metadata</h2>
 <div style="overflow-y: scroll; height: 600px;">
 <p><img data-src="img/empty-mdschema-form.png"></p>
 </div>
@@ -456,8 +427,8 @@ Mariana Montes and Ronny Moreas
 <p><a href="github.com/kuleuven/mango-metadata-schemas">ManGO Schema Manager</a></p>
 </div>
 </section>
-<section id="origins-mango-portal-1" class="slide level2">
-<h2>Origins: ManGO portal</h2>
+<section id="view-of-the-schema-metadata" class="slide level2">
+<h2>View of the schema metadata</h2>
 <div style="overflow-y: scroll; height: 600px;">
 <p><img data-src="img/view-metadata.png"></p>
 </div>
@@ -465,289 +436,20 @@ Mariana Montes and Ronny Moreas
 <p><a href="github.com/kuleuven/mango-metadata-schemas">ManGO Schema Manager</a></p>
 </div>
 </section>
-<section id="section" class="slide level2">
-<h2></h2>
-<div class="columns">
-<div class="column" style="width:40%;">
-<h3 id="python">Python</h3>
-<ul>
-<li>Metadata in batches</li>
-<li>Metadata with data ingestion</li>
-</ul>
-</div><div class="column" style="width:60%;">
-<h3 id="metadata-schemas">Metadata schemas</h3>
-<ul>
-<li>Format validation</li>
-<li>Required fields and default values</li>
-<li>Hierarchical structure</li>
-</ul>
+<section id="the-schema-manager" class="slide level2">
+<h2>The Schema Manager</h2>
+<div style="overflow-y: scroll; height: 600px;">
+<p><img data-src="img/schema-manager.png"></p>
 </div>
-</div>
-<div class="code-with-filename">
-<div class="code-with-filename-file">
-<pre><strong>add_schema_metadata.py</strong></pre>
-</div>
-<div class="sourceCode" id="cb1" data-filename="add_schema_metadata.py"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href=""></a><span class="im">from</span> irods.session <span class="im">import</span> iRODSSession</span>
-<span id="cb1-2"><a href=""></a><span class="im">from</span> mango_mdschema <span class="im">import</span> Schema</span>
-<span id="cb1-3"><a href=""></a></span>
-<span id="cb1-4"><a href=""></a><span class="co"># -- here some code to open the session and choose an object --</span></span>
-<span id="cb1-5"><a href=""></a><span class="co"># -- define metadata as a dictionary ---</span></span>
-<span id="cb1-6"><a href=""></a>my_schema <span class="op">=</span> Schema(<span class="st">"book-v2.0.0-published.json"</span>)</span>
-<span id="cb1-7"><a href=""></a>my_schema.<span class="bu">apply</span>(irods_object, my_metadata)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section></section>
-<section>
-<section id="the-what" class="title-slide slide level1 center">
-<h1>The What</h1>
-
-</section>
-<section id="interpret-schemas-from-a-json-specification" class="slide level2">
-<h2>Interpret schemas from a JSON specification</h2>
-<div id="b5147932" class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-1" class="code-annotation-target"><a href="#annotated-cell-2-1"></a>book_schema <span class="op">=</span> Schema(<span class="st">"book-v2.0.0-published.json"</span>)</span>
-<span id="annotated-cell-2-2"><a href="#annotated-cell-2-2"></a><span class="bu">print</span>(book_schema)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-annotation">
-<dl class="code-annotation-container-hidden code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
-<dd>
-<span data-code-cell="annotated-cell-2" data-code-lines="1" data-code-annotation="1">The optional <code>prefix</code> argument lets you tailor it to your implementation.</span>
-</dd>
-</dl>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Book schema as an example
-Metadata annotated with the schema 'book' (2.0.0) carry the prefix 'mgs'.
-This schema contains the following 7 fields:
-- title, of type 'text' (required).
-- publishing_date, of type 'date' (required).
-- cover_colors, of type 'select'.
-- publisher, of type 'select' (required).
-- ebook, of type 'select'.
-- author, of type 'object' (required).
-- market_price, of type 'float'.</code></pre>
-</div>
+<div class="footer">
+<p><a href="github.com/kuleuven/mango-metadata-schemas">ManGO Schema Manager</a></p>
 </div>
 </section>
-<section id="field-requirements" class="slide level2">
-<h2>Field requirements</h2>
-<div id="4adcfb90" class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href=""></a>book_schema.print_requirements(<span class="st">"publishing_date"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Type: date.
-Required: True. Default: None.
-Repeatable: True.</code></pre>
-</div>
-</div>
-<div class="fragment">
-<div id="470e0882" class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href=""></a>book_schema.print_requirements(<span class="st">"publisher"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Type: select.
-Required: True. Default: Tor.
-Repeatable: False.
-Choose only one of the following values:
-- Penguin House
-- Tor
-- Corgi
-- Nightshade books</code></pre>
-</div>
-</div>
-</div>
-</section>
-<section id="field-requirements-1" class="slide level2">
-<h2>Field requirements</h2>
-<div id="9b584dc3" class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href=""></a>book_schema.print_requirements(<span class="st">"cover_colors"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Type: select.
-Required: False.
-Repeatable: False.
-Choose at least one of the following values:
-- red
-- blue
-- green
-- yellow</code></pre>
-</div>
-</div>
-</section>
-<section id="required-fields-and-defaults" class="slide level2">
-<h2>Required fields and defaults</h2>
-<div id="9508c605" class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="annotated-cell-6"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-6-1"><a href="#annotated-cell-6-1"></a>my_metadata <span class="op">=</span> {</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="1">1</button><span id="annotated-cell-6-2" class="code-annotation-target"><a href="#annotated-cell-6-2"></a>    <span class="st">"title"</span>: <span class="st">"An exemplary book"</span>,</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="2">2</button><span id="annotated-cell-6-3" class="code-annotation-target"><a href="#annotated-cell-6-3"></a>    <span class="st">"author"</span>: [</span>
-<span id="annotated-cell-6-4"><a href="#annotated-cell-6-4"></a>        {<span class="st">"name"</span>: <span class="st">"Fulano De Tal"</span>, <span class="st">"email"</span>: <span class="st">"fulano.detal@kuleuven.be"</span>},</span>
-<span id="annotated-cell-6-5"><a href="#annotated-cell-6-5"></a>        {<span class="st">"name"</span>: <span class="st">"Jane Doe"</span>, <span class="st">"email"</span>: <span class="st">"jane.doe@kuleuven.be"</span>},</span>
-<span id="annotated-cell-6-6"><a href="#annotated-cell-6-6"></a>    ],</span>
-<span id="annotated-cell-6-7"><a href="#annotated-cell-6-7"></a>    <span class="st">"ebook"</span>: <span class="st">"Available"</span>,</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="3">3</button><span id="annotated-cell-6-8" class="code-annotation-target"><a href="#annotated-cell-6-8"></a>    <span class="st">"publishing_date"</span>: <span class="st">"2024-02-01"</span>,</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="4">4</button><span id="annotated-cell-6-9" class="code-annotation-target"><a href="#annotated-cell-6-9"></a>    <span class="st">"cover_colors"</span>: [<span class="st">"red"</span>, <span class="st">"magenta"</span>, <span class="st">"yellow"</span>, <span class="st">"turquoise"</span>],</span>
-<span id="annotated-cell-6-10"><a href="#annotated-cell-6-10"></a>}</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="5">5</button><span id="annotated-cell-6-11" class="code-annotation-target"><a href="#annotated-cell-6-11"></a>book_schema.validate(my_metadata)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-annotation">
-<dl class="code-annotation-container-hidden code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-6" data-target-annotation="1">1</dt>
-<dd>
-<span data-code-cell="annotated-cell-6" data-code-lines="2" data-code-annotation="1">A required field without a default</span>
-</dd>
-<dt data-target-cell="annotated-cell-6" data-target-annotation="2">2</dt>
-<dd>
-<span data-code-cell="annotated-cell-6" data-code-lines="3,4,5,6" data-code-annotation="2">A repeatable composite field</span>
-</dd>
-<dt data-target-cell="annotated-cell-6" data-target-annotation="3">3</dt>
-<dd>
-<span data-code-cell="annotated-cell-6" data-code-lines="8" data-code-annotation="3">A repeatable date</span>
-</dd>
-<dt data-target-cell="annotated-cell-6" data-target-annotation="4">4</dt>
-<dd>
-<span data-code-cell="annotated-cell-6" data-code-lines="9" data-code-annotation="4">A field with multiple possible values, not all of them valid</span>
-</dd>
-<dt data-target-cell="annotated-cell-6" data-target-annotation="5">5</dt>
-<dd>
-<span data-code-cell="annotated-cell-6" data-code-lines="11" data-code-annotation="5">Required fields with default are filled in.</span>
-</dd>
-</dl>
-</div>
-<div class="cell-output cell-output-display" data-execution_count="336">
-<pre><code>{'title': 'An exemplary book',
- 'author': [{'name': 'Fulano De Tal', 'email': ['fulano.detal@kuleuven.be']},
-  {'name': 'Jane Doe', 'email': ['jane.doe@kuleuven.be']}],
- 'ebook': 'Available',
- 'publishing_date': [datetime.date(2024, 2, 1)],
- 'cover_colors': ['red', 'yellow'],
- 'publisher': 'Tor'}</code></pre>
-</div>
-</div>
-</section>
-<section id="error-messages" class="slide level2">
-<h2>Error messages</h2>
-<div id="b9aa38a4" class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href=""></a>book_schema.validate(</span>
-<span id="cb10-2"><a href=""></a>    {</span>
-<span id="cb10-3"><a href=""></a>        <span class="st">"title"</span>: <span class="st">"Some title"</span>,</span>
-<span id="cb10-4"><a href=""></a>        <span class="st">"author"</span>: {<span class="st">"name"</span>: <span class="st">"Jane Doe"</span>, <span class="st">"email"</span>: <span class="st">"sweetdoe@email.eu"</span>},</span>
-<span id="cb10-5"><a href=""></a>        <span class="st">"publishing_date"</span>: date.today(),</span>
-<span id="cb10-6"><a href=""></a>    }</span>
-<span id="cb10-7"><a href=""></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-error">
-<pre><code>ValidationError: 'book.author.email' does not match pattern '^[^@]+@kuleuven.be$', got value 'sweetdoe@email.eu'</code></pre>
-</div>
-</div>
-<div class="fragment">
-<div id="fefc3fbb" class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href=""></a>book_schema.validate(</span>
-<span id="cb12-2"><a href=""></a>    {</span>
-<span id="cb12-3"><a href=""></a>        <span class="st">"title"</span>: <span class="st">"Some title"</span>,</span>
-<span id="cb12-4"><a href=""></a>        <span class="st">"author"</span>: {<span class="st">"name"</span>: <span class="st">"Jane Doe"</span>, <span class="st">"email"</span>: <span class="st">"jane.doe@kuleuven.be"</span>},</span>
-<span id="cb12-5"><a href=""></a>        <span class="st">"publishing_date"</span>: <span class="st">"01/01/1990"</span>,</span>
-<span id="cb12-6"><a href=""></a>    }</span>
-<span id="cb12-7"><a href=""></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-error">
-<pre><code>ConversionError: 'book.publishing_date' cannot be converted to a date, got value '01/01/1990'</code></pre>
-</div>
-</div>
-</div>
-</section>
-<section id="warnings" class="slide level2">
-<h2>Warnings</h2>
-<div id="a4af6ddb" class="cell" data-message="true" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href=""></a><span class="im">import</span> logging</span>
-<span id="cb14-2"><a href=""></a></span>
-<span id="cb14-3"><a href=""></a>logger <span class="op">=</span> logging.getLogger(<span class="st">"mango_mdschema"</span>)</span>
-<span id="cb14-4"><a href=""></a>logger.setLevel(logging.INFO)</span>
-<span id="cb14-5"><a href=""></a></span>
-<span id="cb14-6"><a href=""></a>book_schema.validate(my_metadata)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>INFO:mango_mdschema:Applying default value to required field 'book.publisher': 'Tor'
-INFO:mango_mdschema:Some values in 'book.cover_colors' were not allowed and are discarded: magenta, turquoise. Allowed values: red, blue, green, yellow.
-INFO:mango_mdschema:Missing non-required fields in 'book': ['market_price']
-INFO:mango_mdschema:Missing non-required fields in 'book.author': ['age']
-INFO:mango_mdschema:Missing non-required fields in 'book.author': ['age']</code></pre>
-</div>
-<div class="cell-output cell-output-display" data-execution_count="339">
-<pre><code>{'title': 'An exemplary book',
- 'author': [{'name': 'Fulano De Tal', 'email': ['fulano.detal@kuleuven.be']},
-  {'name': 'Jane Doe', 'email': ['jane.doe@kuleuven.be']}],
- 'ebook': 'Available',
- 'publishing_date': [datetime.date(2024, 2, 1)],
- 'cover_colors': ['red', 'yellow'],
- 'publisher': 'Tor'}</code></pre>
-</div>
-</div>
-</section>
-<section id="write-from-dictionaries-to-namespacing" class="slide level2">
-<h2>Write: from dictionaries to namespacing</h2>
-<div id="01d50d65" class="cell" data-execution_count="10">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href=""></a>irods_object <span class="op">=</span> session.collections.get(home_dir).data_objects[<span class="dv">0</span>]</span>
-<span id="cb17-2"><a href=""></a>irods_object.metadata.items()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="340">
-<pre><code>[]</code></pre>
-</div>
-</div>
-<div id="06cdb5f1" class="cell" data-execution_count="11">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href=""></a>avus <span class="op">=</span> book_schema.to_avus(my_metadata)</span>
-<span id="cb19-2"><a href=""></a>avus</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell fragment" data-execution_count="11">
-<div class="cell-output cell-output-display" data-execution_count="341">
-<pre><code>[&lt;iRODSMeta None mgs.book.title An exemplary book None&gt;,
- &lt;iRODSMeta None mgs.book.author.name Fulano De Tal 1&gt;,
- &lt;iRODSMeta None mgs.book.author.email fulano.detal@kuleuven.be 1&gt;,
- &lt;iRODSMeta None mgs.book.author.name Jane Doe 2&gt;,
- &lt;iRODSMeta None mgs.book.author.email jane.doe@kuleuven.be 2&gt;,
- &lt;iRODSMeta None mgs.book.ebook Available None&gt;,
- &lt;iRODSMeta None mgs.book.publishing_date 2024-02-01 None&gt;,
- &lt;iRODSMeta None mgs.book.cover_colors red None&gt;,
- &lt;iRODSMeta None mgs.book.cover_colors yellow None&gt;,
- &lt;iRODSMeta None mgs.book.publisher Tor None&gt;]</code></pre>
-</div>
-</div>
-</section>
-<section id="write-from-dictionaries-to-namespacing-1" class="slide level2">
-<h2>Write: from dictionaries to namespacing</h2>
-<div id="94c0f440" class="cell" data-execution_count="12">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href=""></a>book_schema.<span class="bu">apply</span>(irods_object, my_metadata)</span>
-<span id="cb21-2"><a href=""></a>irods_object.metadata.items()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="342">
-<pre><code>[&lt;iRODSMeta 8475276 mgs.book.cover_colors red None&gt;,
- &lt;iRODSMeta 8497207 mgs.book.title An exemplary book None&gt;,
- &lt;iRODSMeta 8497210 mgs.book.author.name Fulano De Tal 1&gt;,
- &lt;iRODSMeta 8497213 mgs.book.author.email fulano.detal@kuleuven.be 1&gt;,
- &lt;iRODSMeta 8497216 mgs.book.author.name Jane Doe 2&gt;,
- &lt;iRODSMeta 8497219 mgs.book.author.email jane.doe@kuleuven.be 2&gt;,
- &lt;iRODSMeta 8497222 mgs.book.ebook Available None&gt;,
- &lt;iRODSMeta 8497225 mgs.book.publishing_date 2024-02-01 None&gt;,
- &lt;iRODSMeta 8497228 mgs.book.cover_colors yellow None&gt;,
- &lt;iRODSMeta 8497231 mgs.book.publisher Tor None&gt;,
- &lt;iRODSMeta 8497234 mgs.book.__version__ 2.0.0 None&gt;]</code></pre>
-</div>
-</div>
-</section>
-<section id="read-from-avus-back-to-dictionaries" class="slide level2">
-<h2>Read: from AVUs back to dictionaries</h2>
-<div id="d4f9b405" class="cell" data-execution_count="13">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href=""></a><span class="co">#book_schema.from_avus(avus)</span></span>
-<span id="cb23-2"><a href=""></a>book_schema.extract(irods_object)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="343">
-<pre><code>{'author': [{'email': ['fulano.detal@kuleuven.be'], 'name': 'Fulano De Tal'},
-  {'email': ['jane.doe@kuleuven.be'], 'name': 'Jane Doe'}],
- 'cover_colors': ['red', 'yellow'],
- 'ebook': 'Available',
- 'publisher': 'Tor',
- 'publishing_date': [datetime.date(2024, 2, 1)],
- 'title': 'An exemplary book'}</code></pre>
-</div>
-</div>
-</section></section>
-<section>
-<section id="the-how-specifications" class="title-slide slide level1 center">
-<h1>The How: Specifications</h1>
-
-</section>
-<section id="the-json-format" class="slide level2">
-<h2>The JSON format</h2>
-<div id="e5a90e66" class="cell" data-execution_count="14">
-<div class="cell-output cell-output-display" data-execution_count="344">
+<section id="metadata-schemas-as-json" class="slide level2">
+<h2>Metadata Schemas as JSON</h2>
+<p>book-v2.0.0-published.json</p>
+<div id="13478d1c" class="cell" data-execution_count="2">
+<div class="cell-output cell-output-display" data-execution_count="82">
 <pre><code>{'schema_name': 'book',
  'version': '2.0.0',
  'status': 'published',
@@ -798,13 +500,332 @@ INFO:mango_mdschema:Missing non-required fields in 'book.author': ['age']</code>
 </div>
 </div>
 </section>
-<section id="the-schema-manager" class="slide level2">
-<h2>The Schema Manager</h2>
-<div style="overflow-y: scroll; height: 600px;">
-<p><img data-src="img/schema-manager.png"></p>
+<section id="minimal-example" class="slide level2">
+<h2>Minimal example</h2>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource sh number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href=""></a><span class="ex">pip</span> install mango-mdschema</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><br></p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>add_schema_metadata.py</strong></pre>
 </div>
-<div class="footer">
-<p><a href="github.com/kuleuven/mango-metadata-schemas">ManGO Schema Manager</a></p>
+<div class="sourceCode" id="cb3" data-filename="add_schema_metadata.py" data-code-line-numbers="|2,9,10|1,5,6|3,8,11|"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href=""></a><span class="im">import</span> json</span>
+<span id="cb3-2"><a href=""></a><span class="im">from</span> irods.session <span class="im">import</span> iRODSSession</span>
+<span id="cb3-3"><a href=""></a><span class="im">from</span> mango_mdschema <span class="im">import</span> Schema</span>
+<span id="cb3-4"><a href=""></a></span>
+<span id="cb3-5"><a href=""></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">"metadata_file.json"</span>, <span class="st">"r"</span>) <span class="im">as</span> f:</span>
+<span id="cb3-6"><a href=""></a>  my_metadata <span class="op">=</span> json.load(f) <span class="co"># a dictionary</span></span>
+<span id="cb3-7"><a href=""></a></span>
+<span id="cb3-8"><a href=""></a>my_schema <span class="op">=</span> Schema(<span class="st">"book-v2.0.0-published.json"</span>)</span>
+<span id="cb3-9"><a href=""></a><span class="cf">with</span> iRODSSession(irods_env_file<span class="op">=</span>env_file) <span class="im">as</span> session:</span>
+<span id="cb3-10"><a href=""></a>  irods_object <span class="op">=</span> session.collections.get(home_dir).data_objects[<span class="dv">0</span>]</span>
+<span id="cb3-11"><a href=""></a>  my_schema.<span class="bu">apply</span>(irods_object, my_metadata) <span class="co"># includes validation</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section></section>
+<section>
+<section id="from-json-to-validation" class="title-slide slide level1 center">
+<h1>From JSON to validation</h1>
+
+</section>
+<section id="metadata-schemas-as-json-1" class="slide level2">
+<h2>Metadata schemas as JSON</h2>
+<p>book-v2.0.0-published.json</p>
+<div id="3391c2b7" class="cell" data-execution_count="3">
+<div class="cell-output cell-output-display" data-execution_count="83">
+<pre><code>{'schema_name': 'book',
+ 'version': '2.0.0',
+ 'status': 'published',
+ 'properties': {'title': {'title': 'Book title',
+   'type': 'text',
+   'required': True},
+  'publishing_date': {'title': 'Publishing date',
+   'type': 'date',
+   'required': True,
+   'repeatable': True},
+  'cover_colors': {'title': 'Colors in the cover',
+   'type': 'select',
+   'values': ['red', 'blue', 'green', 'yellow'],
+   'multiple': True,
+   'ui': 'checkbox'},
+  'publisher': {'title': 'Publishing house',
+   'type': 'select',
+   'values': ['Penguin House', 'Tor', 'Corgi', 'Nightshade books'],
+   'multiple': False,
+   'ui': 'dropdown',
+   'required': True,
+   'default': 'Tor'},
+  'ebook': {'title': 'Is there an e-book',
+   'type': 'select',
+   'values': ['Available', 'Unavailable'],
+   'multiple': False,
+   'ui': 'radio'},
+  'author': {'title': 'Author',
+   'properties': {'name': {'title': 'Name and surname',
+     'type': 'text',
+     'required': True},
+    'age': {'title': 'Age',
+     'type': 'integer',
+     'minimum': '12',
+     'maximum': '99'},
+    'email': {'title': 'Email address',
+     'type': 'email',
+     'required': True,
+     'repeatable': True,
+     'pattern': '[^@]+@kuleuven.be'}},
+   'type': 'object',
+   'repeatable': True},
+  'market_price': {'title': 'Market price', 'type': 'float'}},
+ 'edited_by': 'mariana',
+ 'realm': 'datateam_icts_icts_test',
+ 'title': 'Book schema as an example',
+ 'parent': ''}</code></pre>
+</div>
+</div>
+</section>
+<section id="interpretation-via-the-python-package" class="slide level2">
+<h2>Interpretation via the Python package</h2>
+<div id="ee9559d7" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1">1</button><span id="annotated-cell-3-1" class="code-annotation-target"><a href="#annotated-cell-3-1"></a>book_schema <span class="op">=</span> Schema(<span class="st">"book-v2.0.0-published.json"</span>)</span>
+<span id="annotated-cell-3-2"><a href="#annotated-cell-3-2"></a><span class="bu">print</span>(book_schema)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-3" data-code-lines="1" data-code-annotation="1">The optional <code>prefix</code> argument lets you tailor it to your implementation.</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Book schema as an example
+Metadata annotated with the schema 'book' (2.0.0) carry the prefix 'mgs'.
+This schema contains the following 7 fields:
+- title, of type 'text' (required).
+- publishing_date, of type 'date' (required).
+- cover_colors, of type 'select'.
+- publisher, of type 'select' (required).
+- ebook, of type 'select'.
+- author, of type 'object' (required).
+- market_price, of type 'float'.</code></pre>
+</div>
+</div>
+</section>
+<section id="field-requirements" class="slide level2">
+<h2>Field requirements</h2>
+<div id="8d7f77f6" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href=""></a>book_schema.print_requirements(<span class="st">"publishing_date"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Type: date.
+Required: True. Default: None.
+Repeatable: True.</code></pre>
+</div>
+</div>
+<div id="091a18ef" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href=""></a>book_schema.print_requirements(<span class="st">"publisher"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Type: select.
+Required: True. Default: Tor.
+Repeatable: False.
+Choose only one of the following values:
+- Penguin House
+- Tor
+- Corgi
+- Nightshade books</code></pre>
+</div>
+</div>
+</section>
+<section id="field-requirements-1" class="slide level2">
+<h2>Field requirements</h2>
+<div id="6f4a51a6" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href=""></a>book_schema.print_requirements(<span class="st">"cover_colors"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Type: select.
+Required: False.
+Repeatable: False.
+Choose at least one of the following values:
+- red
+- blue
+- green
+- yellow</code></pre>
+</div>
+</div>
+</section></section>
+<section>
+<section id="from-a-python-dictionary-to-avus" class="title-slide slide level1 center">
+<h1>From a Python dictionary to AVUs</h1>
+
+</section>
+<section id="required-fields-and-defaults" class="slide level2">
+<h2>Required fields and defaults</h2>
+<div id="d399a526" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="annotated-cell-7"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1"></a>my_metadata <span class="op">=</span> {</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="1">1</button><span id="annotated-cell-7-2" class="code-annotation-target"><a href="#annotated-cell-7-2"></a>    <span class="st">"title"</span>: <span class="st">"An exemplary book"</span>,</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="2">2</button><span id="annotated-cell-7-3" class="code-annotation-target"><a href="#annotated-cell-7-3"></a>    <span class="st">"author"</span>: [</span>
+<span id="annotated-cell-7-4"><a href="#annotated-cell-7-4"></a>        {<span class="st">"name"</span>: <span class="st">"Fulano De Tal"</span>, <span class="st">"email"</span>: <span class="st">"fulano.detal@kuleuven.be"</span>},</span>
+<span id="annotated-cell-7-5"><a href="#annotated-cell-7-5"></a>        {<span class="st">"name"</span>: <span class="st">"Jane Doe"</span>, <span class="st">"email"</span>: <span class="st">"jane.doe@kuleuven.be"</span>},</span>
+<span id="annotated-cell-7-6"><a href="#annotated-cell-7-6"></a>    ],</span>
+<span id="annotated-cell-7-7"><a href="#annotated-cell-7-7"></a>    <span class="st">"ebook"</span>: <span class="st">"Available"</span>,</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="3">3</button><span id="annotated-cell-7-8" class="code-annotation-target"><a href="#annotated-cell-7-8"></a>    <span class="st">"publishing_date"</span>: <span class="st">"2024-02-01"</span>,</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="4">4</button><span id="annotated-cell-7-9" class="code-annotation-target"><a href="#annotated-cell-7-9"></a>    <span class="st">"cover_colors"</span>: [<span class="st">"red"</span>, <span class="st">"magenta"</span>, <span class="st">"yellow"</span>, <span class="st">"turquoise"</span>],</span>
+<span id="annotated-cell-7-10"><a href="#annotated-cell-7-10"></a>}</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="5">5</button><span id="annotated-cell-7-11" class="code-annotation-target"><a href="#annotated-cell-7-11"></a>book_schema.validate(my_metadata)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-7" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-7" data-code-lines="2" data-code-annotation="1">A required field without a default</span>
+</dd>
+<dt data-target-cell="annotated-cell-7" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-7" data-code-lines="3,4,5,6" data-code-annotation="2">A repeatable composite field</span>
+</dd>
+<dt data-target-cell="annotated-cell-7" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-7" data-code-lines="8" data-code-annotation="3">A repeatable date</span>
+</dd>
+<dt data-target-cell="annotated-cell-7" data-target-annotation="4">4</dt>
+<dd>
+<span data-code-cell="annotated-cell-7" data-code-lines="9" data-code-annotation="4">A field with multiple possible values, not all of them valid</span>
+</dd>
+<dt data-target-cell="annotated-cell-7" data-target-annotation="5">5</dt>
+<dd>
+<span data-code-cell="annotated-cell-7" data-code-lines="11" data-code-annotation="5">Required fields with default are filled in.</span>
+</dd>
+</dl>
+</div>
+</div>
+<div class="cell fragment" data-execution_count="8">
+<div class="cell-output cell-output-display" data-execution_count="88">
+<pre><code>{'title': 'An exemplary book',
+ 'author': [{'name': 'Fulano De Tal', 'email': ['fulano.detal@kuleuven.be']},
+  {'name': 'Jane Doe', 'email': ['jane.doe@kuleuven.be']}],
+ 'ebook': 'Available',
+ 'publishing_date': [datetime.date(2024, 2, 1)],
+ 'cover_colors': ['red', 'yellow'],
+ 'publisher': 'Tor'}</code></pre>
+</div>
+</div>
+</section>
+<section id="error-messages" class="slide level2">
+<h2>Error messages</h2>
+<div id="5e24d8fa" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href=""></a>book_schema.validate(</span>
+<span id="cb13-2"><a href=""></a>    {</span>
+<span id="cb13-3"><a href=""></a>        <span class="st">"title"</span>: <span class="st">"Some title"</span>,</span>
+<span id="cb13-4"><a href=""></a>        <span class="st">"author"</span>: {<span class="st">"name"</span>: <span class="st">"Jane Doe"</span>, <span class="st">"email"</span>: <span class="st">"sweetdoe@email.eu"</span>},</span>
+<span id="cb13-5"><a href=""></a>        <span class="st">"publishing_date"</span>: date.today(),</span>
+<span id="cb13-6"><a href=""></a>    }</span>
+<span id="cb13-7"><a href=""></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment" data-execution_count="9">
+<div class="cell-output cell-output-error">
+<pre><code>ValidationError: 'book.author.email' does not match pattern '^[^@]+@kuleuven.be$', got value 'sweetdoe@email.eu'</code></pre>
+</div>
+</div>
+<div id="321cacf9" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href=""></a>book_schema.validate(</span>
+<span id="cb15-2"><a href=""></a>    {</span>
+<span id="cb15-3"><a href=""></a>        <span class="st">"title"</span>: <span class="st">"Some title"</span>,</span>
+<span id="cb15-4"><a href=""></a>        <span class="st">"author"</span>: {<span class="st">"name"</span>: <span class="st">"Jane Doe"</span>, <span class="st">"email"</span>: <span class="st">"jane.doe@kuleuven.be"</span>},</span>
+<span id="cb15-5"><a href=""></a>        <span class="st">"publishing_date"</span>: <span class="st">"01/01/1990"</span>,</span>
+<span id="cb15-6"><a href=""></a>    }</span>
+<span id="cb15-7"><a href=""></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment" data-execution_count="10">
+<div class="cell-output cell-output-error">
+<pre><code>ConversionError: 'book.publishing_date' cannot be converted to a date, got value '01/01/1990'</code></pre>
+</div>
+</div>
+</section>
+<section id="warnings" class="slide level2">
+<h2>Warnings</h2>
+<div id="7a917103" class="cell" data-message="true" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href=""></a><span class="im">import</span> logging</span>
+<span id="cb17-2"><a href=""></a></span>
+<span id="cb17-3"><a href=""></a>logger <span class="op">=</span> logging.getLogger(<span class="st">"mango_mdschema"</span>)</span>
+<span id="cb17-4"><a href=""></a>logger.setLevel(logging.INFO)</span>
+<span id="cb17-5"><a href=""></a></span>
+<span id="cb17-6"><a href=""></a>book_schema.validate(my_metadata)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment" data-message="true" data-execution_count="11">
+<div class="cell-output cell-output-stderr">
+<pre><code>INFO:mango_mdschema:Applying default value to required field 'book.publisher': 'Tor'
+INFO:mango_mdschema:Some values in 'book.cover_colors' were not allowed and are discarded: magenta, turquoise. Allowed values: red, blue, green, yellow.
+INFO:mango_mdschema:Missing non-required fields in 'book': ['market_price']
+INFO:mango_mdschema:Missing non-required fields in 'book.author': ['age']
+INFO:mango_mdschema:Missing non-required fields in 'book.author': ['age']</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="91">
+<pre><code>{'title': 'An exemplary book',
+ 'author': [{'name': 'Fulano De Tal', 'email': ['fulano.detal@kuleuven.be']},
+  {'name': 'Jane Doe', 'email': ['jane.doe@kuleuven.be']}],
+ 'ebook': 'Available',
+ 'publishing_date': [datetime.date(2024, 2, 1)],
+ 'cover_colors': ['red', 'yellow'],
+ 'publisher': 'Tor'}</code></pre>
+</div>
+</div>
+</section>
+<section id="write-from-dictionaries-to-namespacing" class="slide level2">
+<h2>Write: from dictionaries to namespacing</h2>
+<div id="0fb0dae5" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href=""></a>irods_object <span class="op">=</span> session.collections.get(home_dir).data_objects[<span class="dv">0</span>]</span>
+<span id="cb20-2"><a href=""></a>irods_object.metadata.items()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="92">
+<pre><code>[]</code></pre>
+</div>
+</div>
+<div id="a0f5bc11" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href=""></a>avus <span class="op">=</span> book_schema.to_avus(my_metadata)</span>
+<span id="cb22-2"><a href=""></a>avus</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment" data-execution_count="13">
+<div class="cell-output cell-output-display" data-execution_count="93">
+<pre><code>[&lt;iRODSMeta None mgs.book.title An exemplary book None&gt;,
+ &lt;iRODSMeta None mgs.book.author.name Fulano De Tal 1&gt;,
+ &lt;iRODSMeta None mgs.book.author.email fulano.detal@kuleuven.be 1&gt;,
+ &lt;iRODSMeta None mgs.book.author.name Jane Doe 2&gt;,
+ &lt;iRODSMeta None mgs.book.author.email jane.doe@kuleuven.be 2&gt;,
+ &lt;iRODSMeta None mgs.book.ebook Available None&gt;,
+ &lt;iRODSMeta None mgs.book.publishing_date 2024-02-01 None&gt;,
+ &lt;iRODSMeta None mgs.book.cover_colors red None&gt;,
+ &lt;iRODSMeta None mgs.book.cover_colors yellow None&gt;,
+ &lt;iRODSMeta None mgs.book.publisher Tor None&gt;]</code></pre>
+</div>
+</div>
+</section>
+<section id="write-from-dictionaries-to-namespacing-1" class="slide level2">
+<h2>Write: from dictionaries to namespacing</h2>
+<div id="74b57e75" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href=""></a>book_schema.<span class="bu">apply</span>(irods_object, my_metadata)</span>
+<span id="cb24-2"><a href=""></a>irods_object.metadata.items()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="94">
+<pre><code>[&lt;iRODSMeta 8475276 mgs.book.cover_colors red None&gt;,
+ &lt;iRODSMeta 8497207 mgs.book.title An exemplary book None&gt;,
+ &lt;iRODSMeta 8497210 mgs.book.author.name Fulano De Tal 1&gt;,
+ &lt;iRODSMeta 8497213 mgs.book.author.email fulano.detal@kuleuven.be 1&gt;,
+ &lt;iRODSMeta 8497216 mgs.book.author.name Jane Doe 2&gt;,
+ &lt;iRODSMeta 8497219 mgs.book.author.email jane.doe@kuleuven.be 2&gt;,
+ &lt;iRODSMeta 8497222 mgs.book.ebook Available None&gt;,
+ &lt;iRODSMeta 8497225 mgs.book.publishing_date 2024-02-01 None&gt;,
+ &lt;iRODSMeta 8497228 mgs.book.cover_colors yellow None&gt;,
+ &lt;iRODSMeta 8497231 mgs.book.publisher Tor None&gt;,
+ &lt;iRODSMeta 8497234 mgs.book.__version__ 2.0.0 None&gt;]</code></pre>
+</div>
+</div>
+</section>
+<section id="read-from-avus-back-to-dictionaries" class="slide level2">
+<h2>Read: from AVUs back to dictionaries</h2>
+<div id="668a6506" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href=""></a><span class="co">#book_schema.from_avus(avus)</span></span>
+<span id="cb26-2"><a href=""></a>book_schema.extract(irods_object)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="95">
+<pre><code>{'author': [{'email': ['fulano.detal@kuleuven.be'], 'name': 'Fulano De Tal'},
+  {'email': ['jane.doe@kuleuven.be'], 'name': 'Jane Doe'}],
+ 'cover_colors': ['red', 'yellow'],
+ 'ebook': 'Available',
+ 'publisher': 'Tor',
+ 'publishing_date': [datetime.date(2024, 2, 1)],
+ 'title': 'An exemplary book'}</code></pre>
+</div>
 </div>
 </section></section>
 <section>
@@ -812,17 +833,25 @@ INFO:mango_mdschema:Missing non-required fields in 'book.author': ['age']</code>
 <h1>Conclusion</h1>
 
 </section>
-<section id="mango-mdschema-main-takeaways" class="slide level2">
-<h2><code>mango-mdschema</code>: Main takeaways</h2>
+<section id="metadata-schemas-with-python" class="slide level2">
+<h2>Metadata schemas with Python</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h3 id="metadata-schemas">Metadata schemas</h3>
 <ul>
-<li><p>Offers validation, writing and reading of structured metadata</p></li>
-<li><p>Schemas are described in JSON, can be designed in the manager</p></li>
-<li><p>Metadata can be hierarchical, which is rendered with namespacing</p></li>
-<li><p>Input can be automatized, output can be parsed and rendered in the portal</p></li>
+<li>Format validation</li>
+<li>Required fields and default values</li>
+<li>Hierarchical structure</li>
 </ul>
-</section></section>
-<section id="section-1" class="title-slide slide level1 center">
-<h1></h1>
+</div><div class="column" style="width:50%;">
+<h3 id="python">Python</h3>
+<ul>
+<li>Processing data in badges</li>
+<li>Reading metadata from files</li>
+<li>E.g. metadata with data ingestion</li>
+</ul>
+</div>
+</div>
 <div class="callout callout-tip callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -837,10 +866,18 @@ INFO:mango_mdschema:Missing non-required fields in 'book.author': ['age']</code>
 </div>
 </div>
 </section>
-
+<section id="mango-mdschema" class="slide level2">
+<h2><code>mango-mdschema</code></h2>
+<ul>
+<li><p>Offers validation, writing and reading of structured metadata</p></li>
+<li><p>Schemas are described in JSON, can be designed in the manager</p></li>
+<li><p>Metadata can be hierarchical, rendered with namespacing</p></li>
+<li><p>Input can be automatized, output can be parsed and rendered in the portal</p></li>
+</ul>
+</section></section>
 <section id="thank-you" class="title-slide slide level1 center" data-background-color="#DCE7F0">
 <h1>Thank you!</h1>
-<p>github.com/kuleuven/mango-mdschema github.com/kuleuven/mango-metadata-schemas</p>
+<p><a href="https://github.com/kuleuven/mango-mdschema">github.com/kuleuven/mango-mdschema</a> <a href="https://github.com/kuleuven/mango-metadata-schemas">github.com/kuleuven/mango-metadata-schemas</a></p>
 <div class="footer">
 
 </div>
